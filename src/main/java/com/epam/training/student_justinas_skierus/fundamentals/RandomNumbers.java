@@ -2,7 +2,6 @@ package com.epam.training.student_justinas_skierus.fundamentals;
 
 import java.util.Random;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 
 /**
  * Print a given number of random numbers with and without a newline break.
