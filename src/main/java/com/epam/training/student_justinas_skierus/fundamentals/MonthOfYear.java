@@ -39,6 +39,7 @@ public class MonthOfYear
 			System.exit(1);
 		}
 
+		scanner.close();
 	}
 
 }

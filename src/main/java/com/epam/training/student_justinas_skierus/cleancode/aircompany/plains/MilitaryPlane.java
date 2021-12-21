@@ -14,5 +14,11 @@ import lombok.experimental.SuperBuilder;
 public class MilitaryPlane extends Plane {
 
   private final MilitaryType type;
+  
+  public MilitaryPlane(String model, Integer maxSpeed, Integer maxFlightDistance, Integer maxLoadCapacity, MilitaryType militaryType)
+  {
+	  super(model, maxSpeed, maxFlightDistance, maxLoadCapacity);
+	  this.type = militaryType;
+  }
 
 }

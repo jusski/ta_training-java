@@ -29,6 +29,8 @@ public class UserGreeting
 			
 			System.out.printf("Hello %s%n", name);
 		}
+		
+		scanner.close();
 	}
 
 }

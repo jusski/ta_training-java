@@ -15,8 +15,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ExperimentalPlane extends Plane {
 
-  private final @NonNull ExperimentalType type;
-  private @NonNull ClassificationLevel classificationLevel;
+	private final @NonNull ExperimentalType type;
+	private @NonNull ClassificationLevel classificationLevel;
 
-
+	public ExperimentalPlane(String model, Integer maxSpeed,
+			Integer maxFlightDistance, Integer maxLoadCapacity,
+			ExperimentalType type, ClassificationLevel classificationLevel) {
+		super(model, maxSpeed, maxFlightDistance, maxLoadCapacity);
+		
+		this.type = type;
+		this.classificationLevel = classificationLevel;
+	}
 }

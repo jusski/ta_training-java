@@ -45,6 +45,7 @@ public class RandomNumbers
 			System.exit(1);
 		}
 
+		scanner.close();
 	}
 
 }
