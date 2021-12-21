@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.exceptions.AirportException;
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.models.MilitaryType;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.MilitaryPlane;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.PassengerPlane;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.Plane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.MilitaryPlane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.PassengerPlane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.Plane;
 
 public class Runner {
 	

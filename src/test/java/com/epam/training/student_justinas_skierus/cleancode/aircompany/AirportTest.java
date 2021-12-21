@@ -13,10 +13,10 @@ import org.testng.annotations.Test;
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.exceptions.AirportException;
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.models.ExperimentalType;
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.models.MilitaryType;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.ExperimentalPlane;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.MilitaryPlane;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.PassengerPlane;
-import com.epam.training.student_justinas_skierus.cleancode.aircompany.plains.Plane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.ExperimentalPlane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.MilitaryPlane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.PassengerPlane;
+import com.epam.training.student_justinas_skierus.cleancode.aircompany.planes.Plane;
 import com.epam.training.student_justinas_skierus.cleancode.aircompany.security.ClassificationLevel;
 
 public class AirportTest {

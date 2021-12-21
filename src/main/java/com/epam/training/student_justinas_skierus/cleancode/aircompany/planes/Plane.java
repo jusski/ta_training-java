@@ -1,4 +1,4 @@
-package com.epam.training.student_justinas_skierus.cleancode.aircompany.plains;
+package com.epam.training.student_justinas_skierus.cleancode.aircompany.planes;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
