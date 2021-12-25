@@ -9,6 +9,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Если в качестве параметра в программу передается не путь к директории, а путь
+ * к txt файлу по образцу выше - прочитать файл и вывести в консоль следующие
+ * данные:
+ * 
+ * Количество папок 
+ * Количество файлов 
+ * Среднее количество файлов в папке 
+ * Среднюю длинну названия файла
+ *
+ */
 public class DirectoryTree
 {
 	private static PrintStream printStream = null;
