@@ -15,8 +15,7 @@ public class RemoveComments
 	public static void main(String[] args) throws IOException
 	{
 		String path = args.length == 1 ? args[0] : "src/main/java/com/epam/training/student_justinas_skierus/java_io/optional_tasks/RemoveComments.java";
-		byte[] allBytes = Files.readAllBytes(Paths.get(path));
-		chars = new String(allBytes).toCharArray();
+		chars = Files.readString(Paths.get(path)).toCharArray();
 
 		checkForObfuscatedJava();
 		for (charAt = 0; charAt < chars.length; ++charAt)
@@ -100,7 +99,6 @@ public class RemoveComments
 				&& (chars[charAt] != '\r' || chars[charAt + 1] != '\n'))
 		{
 			chars[charAt++] = ' ';
-
 		}
 	}
 
@@ -117,7 +115,6 @@ public class RemoveComments
 			}
 			if (chars[charAt + 1] == '"' && chars[charAt + 2] == '"')
 			{
-
 				charAt += 2;
 				break;
 			}
