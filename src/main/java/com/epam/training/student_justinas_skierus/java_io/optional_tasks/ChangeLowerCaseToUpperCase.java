@@ -33,10 +33,8 @@ public class ChangeLowerCaseToUpperCase
 				for (; i < codePoints.length; ++i)
 				{
 					c = codePoints[i];
-					if (Character.isWhitespace(codePoints[i]))
-					{
-						break;
-					}
+					if (Character.isWhitespace(codePoints[i])) break;
+					
 					codePoints[i] = Character.toUpperCase(c);
 				}
 			}
