@@ -91,7 +91,11 @@ public class Cashier implements Runnable
 				notEmpty.awaitUninterruptibly();
 			}
 			Visitor visitor = queue.remove(0);
+			
 			notFull.signal();
+			FastFoodRestaurant.restaurantLock.lock();
+			FastFoodRestaurant.queueChanged.signal();
+			FastFoodRestaurant.restaurantLock.unlock();
 			return visitor;
 		}
 		finally
@@ -110,7 +114,11 @@ public class Cashier implements Runnable
 			if (index != -1)
 			{
 				queue.remove(index);
+				
 				notFull.signal();
+				FastFoodRestaurant.restaurantLock.lock();
+				FastFoodRestaurant.queueChanged.signal();
+				FastFoodRestaurant.restaurantLock.unlock();
 				return true;
 			}
 		}

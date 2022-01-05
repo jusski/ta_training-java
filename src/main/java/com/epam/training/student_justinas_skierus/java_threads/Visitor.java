@@ -26,8 +26,16 @@ public class Visitor implements Runnable
 			{
 				cashier = getCashierWithMinQueueLength();
 			}
-			
-			if (cashier.tryAdd(this)) break;
+			try
+			{
+				FastFoodRestaurant.restaurantLock.lock();
+				if (cashier.tryAdd(this)) break;
+				FastFoodRestaurant.queueChanged.await();
+			}
+			finally
+			{
+				FastFoodRestaurant.restaurantLock.unlock();
+			}
 			Thread.sleep(100);
 		}
 
