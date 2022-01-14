@@ -27,7 +27,7 @@ public class RandomNumbers
 				System.exit(1);
 			}
 
-			Random random = new Random(); //
+			Random random = new Random(); 
 			for (int i = 0; i < number; ++i)
 			{
 				System.out.printf("%d ", random.nextInt());
