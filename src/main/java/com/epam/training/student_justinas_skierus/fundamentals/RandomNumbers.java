@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class RandomNumbers
 {
 
+	private static int SEED = 123;
 	public static void main(String[] args)
 	{
 		System.out.printf("Enter one positive integer[0-%d]: ", Integer.MAX_VALUE);
@@ -27,12 +28,13 @@ public class RandomNumbers
 				System.exit(1);
 			}
 
-			Random random = new Random(); 
+			Random random = new Random(SEED);
 			for (int i = 0; i < number; ++i)
 			{
 				System.out.printf("%d ", random.nextInt());
 			}
 			System.out.println();
+			random.setSeed(SEED);
 			for (int i = 0; i < number; ++i)
 			{
 				System.out.printf("%d%n", random.nextInt());
