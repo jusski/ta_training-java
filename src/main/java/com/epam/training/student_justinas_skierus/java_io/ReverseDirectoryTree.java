@@ -26,14 +26,14 @@ public class ReverseDirectoryTree
 
 	private void reversePrintDirectories(ListIterator<String> lineIterator, String prefix)
 	{
-		String directoryNamePrefix = "├───";
+		String directoryNamePrefix = prefix + "├───";
 
 		while (lineIterator.hasNext())
 		{
 			String line = lineIterator.next();
-			if (line.startsWith(prefix + directoryNamePrefix))
+			if (line.startsWith(directoryNamePrefix))
 			{
-				directoryNames.add(line.substring(prefix.length() + directoryNamePrefix.length()));
+				directoryNames.add(line.substring(directoryNamePrefix.length()));
 				reversePrintEntries(lineIterator, prefix + "│" + " ");
 			}
 			else
@@ -48,13 +48,13 @@ public class ReverseDirectoryTree
 
 	private void reversePrintLastDirectory(ListIterator<String> lineIterator, String prefix)
 	{
-		String directoryNamePrefix = "└───";
+		String directoryNamePrefix = prefix + "└───";
 		if (lineIterator.hasNext())
 		{
 			String line = lineIterator.next();
-			if (line.startsWith(prefix + directoryNamePrefix))
+			if (line.startsWith(directoryNamePrefix))
 			{
-				directoryNames.add(line.substring(prefix.length() + directoryNamePrefix.length()));
+				directoryNames.add(line.substring(directoryNamePrefix.length()));
 				reversePrintEntries(lineIterator, prefix + "  ");
 			}
 			else
@@ -66,14 +66,14 @@ public class ReverseDirectoryTree
 
 	private void reversePrintFiles(ListIterator<String> lineIterator, String prefix)
 	{
-		String fileNamePrefix = "    ";
+		String fileNamePrefix = prefix + "    ";
 		boolean foundFileEntry = false;
 		while (lineIterator.hasNext())
 		{
 			String line = lineIterator.next();
-			if (line.startsWith(prefix + fileNamePrefix))
+			if (line.startsWith(fileNamePrefix))
 			{
-				fileNames.add(line.substring(prefix.length() + fileNamePrefix.length()));
+				fileNames.add(line.substring(fileNamePrefix.length()));
 				foundFileEntry = true;
 			}
 			else if (line.startsWith(prefix)) // empty line
@@ -94,7 +94,7 @@ public class ReverseDirectoryTree
 
 	private void reverseEntriesFromTxtFile(File txtFile) throws IOException
 	{
-		List<String> allLines = Files.readAllLines(txtFile.toPath(), StandardCharsets.UTF_16);
+		List<String> allLines = Files.readAllLines(txtFile.toPath(), StandardCharsets.UTF_8);
 		ListIterator<String> lineIterator = allLines.listIterator();
 		reversePrintEntries(lineIterator, "");
 
@@ -111,36 +111,20 @@ public class ReverseDirectoryTree
 
 	}
 
-	public void printSummary(File txtFile)
+	public void printSummary(File txtFile) throws IOException
 	{
-		try
-		{
-			reverseEntriesFromTxtFile(txtFile);
-			System.out.println("Number of files: " + fileNames.size());
-			System.out.println("Number of directories: " + directoryNames.size());
-			System.out.printf("Average number of files in directories: %.1f%n",
-					(float) fileNames.size() / directoriesWithFiles);
+		reverseEntriesFromTxtFile(txtFile);
+		System.out.println("Number of files: " + fileNames.size());
+		System.out.println("Number of directories: " + directoryNames.size());
+		System.out.printf("Average number of files in directories: %.1f%n",
+				(float) fileNames.size() / directoriesWithFiles);
 
-			Double averageFileNameLength = fileNames.stream().collect(Collectors.averagingInt(String::length));
-			System.out.printf("Average file name length: %.1f%n", averageFileNameLength);
-		}
-		catch (IOException e)
-		{
-			if (!txtFile.exists())
-			{
-				System.err.printf("File %s not found.%n", txtFile.toString());
+		Double averageFileNameLength = fileNames.stream().collect(Collectors.averagingInt(String::length));
+		System.out.printf("Average file name length: %.1f%n", averageFileNameLength);
 
-			}
-			else
-			{
-				System.err.println("Unexpected error. Program will exit.");
-				e.printStackTrace();
-			}
-			System.exit(1);
-		}
 	}
 
-	public static void main(String args[])
+	public static void main(String args[]) throws IOException
 	{
 		ReverseDirectoryTree reverseDirectoryTree = new ReverseDirectoryTree();
 		reverseDirectoryTree.printSummary(new File("tree.txt"));

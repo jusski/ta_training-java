@@ -4,10 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import lombok.Cleanup;
 
 /**
  * Реализовать программу которая будет получать в качестве аргумента командной
@@ -26,127 +31,83 @@ import java.util.stream.Collectors;
  */
 public class DirectoryTree
 {
-	private static PrintStream printStream = null;
-
-	public static void printEntries(File entry, String prefix) throws IOException
+	private static List<File> filterEntries(File entry, Predicate<File> predicate)
 	{
-		List<File> files = Arrays.asList(entry.listFiles()).stream()
-				.filter(File::isFile)
-				.filter(e -> !e.isHidden()) // program tree doesn't show hidden files by default
-				.sorted()
-				.collect(Collectors.toList());
-
-		List<File> directories = Arrays.asList(entry.listFiles()).stream()
-				.filter(File::isDirectory)
+		return Arrays.asList(entry.listFiles()).stream()
+				.filter(predicate)
 				.filter(e -> !e.isHidden())
 				.sorted()
-				.collect(Collectors.toList());
+				.collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	public static void printEntries(File entry, String prefix, PrintStream printStream) throws IOException 
+	{
+		List<File> files = filterEntries(entry, File::isFile);
+		List<File> directories = filterEntries(entry, File::isDirectory);
 
 		if (directories.size() == 0)
 		{
-			printFiles(files, prefix + "   ");
+			printFiles(files, prefix + "   ", printStream);
 		}
 		else
 		{
-			printFiles(files, prefix + "  │");
+			printFiles(files, prefix + "  │", printStream);
 		}
 
-		printDirectories(directories, prefix + "  ");
-
+		printDirectories(directories, prefix + "  ", printStream);
 	}
 
-	public static void printFiles(List<File> files, String prefix) throws IOException
+	public static void printFiles(List<File> files, String prefix, PrintStream printStream) throws IOException
 	{
-		String fileNamePrefix = "    ";
+		String fileNamePrefix = prefix + "    ";
 		if (!files.isEmpty())
 		{
-			for (File file : files)
-			{
-				System.out.println(prefix + fileNamePrefix + file.getName());
-				printStream.println(prefix + fileNamePrefix + file.getName());
-			}
-			System.out.println(prefix);
+			files.stream().forEachOrdered(file -> printStream.println(fileNamePrefix + file.getName()));
 			printStream.println(prefix);
 		}
-
 	}
 
-	public static void printDirectories(List<File> directories, String prefix) throws IOException
+	public static void printDirectories(List<File> directories, String prefix, PrintStream printStream) throws IOException
 	{
-		String directoryNamePrefix = "├───";
-		Iterator<File> iterator = directories.iterator(); //NOTE(jusski) List.get only works "ok" on RandomAccess Lists
-		if (iterator.hasNext())
+		String directoryNamePrefix = prefix + "├───";
+		if (!directories.isEmpty())
 		{
-			for (int i = 0; i < directories.size() - 1; ++i)
+			int LastElementIndex = directories.size() - 1;
+			for (int i = 0; i < LastElementIndex; ++i)
 			{
-				File directory = iterator.next();
-				System.out.println(prefix + directoryNamePrefix + directory.getName());
-				printStream.println(prefix + directoryNamePrefix + directory.getName());
-				printEntries(directory, prefix + "│" + " ");
+				File directory = directories.get(i);
+				printStream.println(directoryNamePrefix + directory.getName());
+				printEntries(directory, prefix + "│" + " ", printStream);
 			}
-			File directory = iterator.next();
-			printLastDirectory(directory, prefix);
+			File directory = directories.get(LastElementIndex);
+			printLastDirectory(directory, prefix, printStream);
 		}
 	}
 
-	public static void printLastDirectory(File directory, String prefix) throws IOException
+	public static void printLastDirectory(File directory, String prefix, PrintStream printStream) throws IOException
 	{
 		String directoryNamePrefix = "└───";
-		System.out.println(prefix + directoryNamePrefix + directory.getName());
 		printStream.println(prefix + directoryNamePrefix + directory.getName());
-		printEntries(directory, prefix + "  ");
+		printEntries(directory, prefix + "  ", printStream);
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
-		if (args.length < 1)
+
+		String path = args.length == 1 ? args[0] : ".";
+		File file = new File(path);
+		if (file.isDirectory())
 		{
-			String path = args.length == 1 ? args[0] : ".";
-			File file = new File(path);
-			if (file.isDirectory())
-			{
-				try
-				{
-					//NOTE(jusski) Should we use default charset of "console" or UTF-8?
-					printStream = new PrintStream(new File("tree.txt"), StandardCharsets.UTF_16); 
-					printEntries(file, "");
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-					System.exit(1);
-				}
-				finally
-				{
-					if (printStream != null)
-					{
-						printStream.flush();
-						printStream.close();
-					}
-				}
-			}
-			else if (file.isFile())
-			{
-				ReverseDirectoryTree reverseDirectoryTree = new ReverseDirectoryTree();
-				reverseDirectoryTree.printSummary(file);
-			}
-			else if (!file.exists())
-			{
-				System.err.printf("Invalid path: %s.", file.toString());
-				System.exit(1);
-			}
-			else
-			{
-				//NOTE(jusski) better safe then sorry (i am not sure this path can happen)
-				System.err.println("Unexpected error. Program will exit.");
-				System.exit(1);
-			}
+			@Cleanup PrintStream printStream = new PrintStream(new File("tree.txt"), StandardCharsets.UTF_8);
+			printEntries(file, "", printStream);
 		}
-		else
+		else if (file.isFile())
 		{
-			System.err.println("Too many parameters. Program accepts only 1 parameter: path to directory"
-					         + "or path to *.txt file (which was created by this program)");
+			ReverseDirectoryTree reverseDirectoryTree = new ReverseDirectoryTree();
+			reverseDirectoryTree.printSummary(file);
 		}
+		
+		Files.copy(Path.of("tree.txt"), System.out);
 	}
 
 }

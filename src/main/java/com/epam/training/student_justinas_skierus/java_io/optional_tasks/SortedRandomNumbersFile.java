@@ -2,7 +2,6 @@ package com.epam.training.student_justinas_skierus.java_io.optional_tasks;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,66 +16,21 @@ import java.util.stream.Collectors;
  */
 public class SortedRandomNumbersFile
 {
-
-	public static void main(String[] args) 
-	{
-		String path = args.length == 1 ? args[0] : "RandomNumbers.txt";
-		
-		try
-		{
-			writeRandomNumbersToFile(path);
-		}
-		catch (IOException e)
-		{
-			File file = new File(path);
-			if(!file.exists() && !file.isFile())
-			{
-				System.err.println("Path is not file: " + path);
-			
-			}
-			if(!file.canRead())
-			{
-				System.err.println("Can't read file(" + path +"). Check file permissions.");
-			}
-			else
-			{
-				System.err.println("Unexpected program error while writing to file: " + path);
-				e.printStackTrace();
-			}
-			System.exit(1);
-		}
-		
-		try
-		{
-			sortNumbersFromFileAndOutputToConsole(path);
-		}
-		catch (IOException e)
-		{
-			File file = new File(path);
-			if(file.isDirectory())
-			{
-				System.err.println("File \"" + path +"\" was deleted and same name directory was created while working on it.");
-			}
-			if(!file.exists())
-			{
-				System.err.println("File \"" + path +"\" was deleted.");
-			}
-			if(!file.canRead())
-			{
-				System.err.println("Can't read file(" + path +"). Check file permissions.");
-			}
-			else
-			{
-				System.err.println("Unexpected program error while reading file: " + path);
-				e.printStackTrace();
-			}
-			System.exit(1);
-		}
-	}
+    private static final String DEBUG_OUTPUT_FILE_PATH = "RandomNumbers.txt";
+    private static final int DEBUG_COUNT = 30;
 	
-	private static void writeRandomNumbersToFile(String path) throws IOException
+    public static void main(String[] args) throws IOException
 	{
-		String randomNumbers = new Random().ints(30)
+		String path = args.length >= 1 ? args[0] : DEBUG_OUTPUT_FILE_PATH;
+		int count = args.length == 2 ? Integer.valueOf(args[1]) : DEBUG_COUNT;
+
+		writeRandomNumbersToFile(path, count);
+		sortNumbersFromFileAndOutputToConsole(path);
+	}
+
+	private static void writeRandomNumbersToFile(String path, int count) throws IOException
+	{
+		String randomNumbers = new Random().ints(count)
 				.boxed()
 				.map(e -> e.toString())
 				.collect(Collectors.joining("\n"));
@@ -87,9 +41,9 @@ public class SortedRandomNumbersFile
 	private static void sortNumbersFromFileAndOutputToConsole(String path) throws IOException
 	{
 		List<String> linesOfRandomIntegers = Files.readAllLines(Paths.get(path));
-		List<Integer> sortedIntegersString = linesOfRandomIntegers.stream()
+		linesOfRandomIntegers.stream()
 				.mapToInt(Integer::valueOf)
-				.sorted().boxed().toList();
-	    sortedIntegersString.forEach(System.out::println);
+				.sorted()
+				.forEach(System.out::println);
 	}
 }

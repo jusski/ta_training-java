@@ -1,7 +1,8 @@
 package com.epam.training.student_justinas_skierus.java_io.optional_tasks;
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -10,35 +11,15 @@ import java.nio.file.Paths;
  */
 public class RemoveComments
 {
-	static int charAt;
-	static char[] chars;
-
-	public static void main(String[] args) 
+	private static final String DEBUG_INPUT_FILE_PATH = "src/main/java/com/epam/training/student_justinas_skierus/java_io/optional_tasks/RemoveComments.java";
+	private static final String DEBUG_OUTPUT_FILE_PATH = "RemovedComments.txt";
+	private static int charAt;
+	private static char[] chars;
+    
+	public static void main(String[] args) throws IOException 
 	{
-		String path = args.length == 1 ? args[0] : "src/main/java/com/epam/training/student_justinas_skierus/java_io/optional_tasks/RemoveComments.java";
-		try
-		{
-			chars = Files.readString(Paths.get(path)).toCharArray();
-		}
-		catch (IOException e)
-		{
-			File file = new File(path);
-			if(!file.exists() && !file.isFile())
-			{
-				System.err.println("Invalid java source code file path: " + path);
-			
-			}
-			if(!file.canRead())
-			{
-				System.err.println("Cant read java source code file(" + path +"). Check file permissions.");
-			}
-			else
-			{
-				System.err.println("Unexpected program error while reading file: " + path);
-				e.printStackTrace();
-			}
-			System.exit(1);
-		}
+		String path = args.length == 1 ? args[0] : DEBUG_INPUT_FILE_PATH;
+	    chars = Files.readString(Paths.get(path)).toCharArray();
 
 		checkForObfuscatedJava();
 		for (charAt = 0; charAt < chars.length; ++charAt)
@@ -48,9 +29,9 @@ public class RemoveComments
 			{
 				case '"':
 				{
-					if (false == (chars[charAt - 1] == '\'' || (chars[charAt - 1] == '\\' && chars[charAt - 2] == '\'')))
+					if (startOfString())
 					{
-						if (chars[charAt + 1] == '"' && chars[charAt + 2] == '"')
+						if (startOfMultilineString())
 						{
 							skipMultiLineStringUntilClosingQuotes();
 						}
@@ -63,11 +44,11 @@ public class RemoveComments
 				}
 				case '/':
 				{
-					if (chars[charAt + 1] == '/')
+					if (startOfSingleLineComment())
 					{
 						replaceSingleLineCommentWithSpaces();
 					}
-					else if (chars[charAt + 1] == '*')
+					else if (startOfMultiLineComment())
 					{
 						replaceMultiLineCommentWithSpaces();
 					}
@@ -76,7 +57,30 @@ public class RemoveComments
 
 			}
 		}
-        System.out.println(new String(chars));
+		
+        String output = new String(chars);
+        Files.writeString(Path.of(DEBUG_OUTPUT_FILE_PATH), output, StandardCharsets.UTF_8);
+        Files.copy(Path.of(DEBUG_OUTPUT_FILE_PATH), System.out);
+	}
+
+	private static boolean startOfMultiLineComment()
+	{
+		return chars[charAt + 1] == '*';
+	}
+
+	private static boolean startOfSingleLineComment()
+	{
+		return chars[charAt + 1] == '/';
+	}
+
+	private static boolean startOfMultilineString()
+	{
+		return chars[charAt + 1] == '"' && chars[charAt + 2] == '"';
+	}
+
+	private static boolean startOfString()
+	{
+		return !(chars[charAt - 1] == '\'' || (chars[charAt - 1] == '\\' && chars[charAt - 2] == '\''));
 	}
 
 	private static void checkForObfuscatedJava()
@@ -109,7 +113,7 @@ public class RemoveComments
 	private static void replaceMultiLineCommentWithSpaces()
 	{
 		while ((charAt < chars.length) && 
-			   !(chars[charAt] == '*'  && chars[charAt + 1] == '/'))
+			   !(chars[charAt] == '*'  && startOfSingleLineComment()))
 		{
 			chars[charAt++] = ' ';
 		}
@@ -138,7 +142,7 @@ public class RemoveComments
 			{
 				continue;
 			}
-			if (chars[charAt + 1] == '"' && chars[charAt + 2] == '"')
+			if (startOfMultilineString())
 			{
 				charAt += 2;
 				break;
@@ -154,7 +158,7 @@ public class RemoveComments
 		if (chars[charAt - 1] == '\\')
 		{
 			int reverseIndex = charAt - 1;
-			int escapeSymbolCount = 0;
+			int escapeSymbolCount = 1;
 			while (chars[--reverseIndex] == '\\')
 			{
 				escapeSymbolCount += 1;
