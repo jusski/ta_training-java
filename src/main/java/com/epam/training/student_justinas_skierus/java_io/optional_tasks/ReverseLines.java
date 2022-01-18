@@ -2,6 +2,7 @@ package com.epam.training.student_justinas_skierus.java_io.optional_tasks;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,15 +18,55 @@ import java.util.stream.Collectors;
 public class ReverseLines
 {
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) 
 	{
-		String inputFilePath = args.length == 2 ? args[0] : "pom.xml";
-		String outputFilePath = args.length == 2 ? args[1] : "ReversedPom.txt";
-		List<String> lines = Files.readAllLines(Paths.get(inputFilePath));
+		String inputFilePath = args.length == 2 ? args[0] : "src/main/java/com/epam/training/student_justinas_skierus/java_io/optional_tasks/ReverseLines.java";
+		String outputFilePath = args.length == 2 ? args[1] : "ReversedFile.txt";
+		List<String> lines = null;
+		List<String> reversedLinesList = null;
+		try
+		{
+			lines = Files.readAllLines(Paths.get(inputFilePath));
+			reversedLinesList = lines.stream().map(ReverseLines::reverseString).toList();
+		}
+		catch (IOException e)
+		{
+			File file = new File(inputFilePath);
+			if(!file.exists() && !file.isFile())
+			{
+				System.err.println("Invalid java source code file path: " + inputFilePath);
+			
+			}
+			if(!file.canRead())
+			{
+				System.err.println("Cant read java source code file(" + inputFilePath +"). Check file permissions.");
+			}
+			else
+			{
+				System.err.println("Unexpected program error while reading file: " + inputFilePath);
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
 		
-		List<String> reversedLinesList = lines.stream().map(ReverseLines::reverseString).toList();
-		
-		Files.write(Paths.get(outputFilePath), reversedLinesList, UTF_8);
+		try
+		{
+			Files.write(Paths.get(outputFilePath), reversedLinesList, UTF_8);
+			
+		}
+		catch (IOException e)
+		{
+			File file = new File(outputFilePath);
+			if(file.exists() && !file.canWrite())
+			{
+				System.err.println("File (" + outputFilePath + ") already exits and cant be overridden becouse of permissions.");
+			}
+			else
+			{
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
 	}
 	
 	private static String reverseString(String string)
