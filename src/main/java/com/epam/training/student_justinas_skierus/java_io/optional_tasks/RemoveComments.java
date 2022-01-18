@@ -85,7 +85,8 @@ public class RemoveComments
 
 	private static void replaceMultiLineCommentWithSpaces()
 	{
-		while (charAt < chars.length && !(chars[charAt] == '*' && chars[charAt + 1] == '/'))
+		while ((charAt < chars.length) && 
+			   !(chars[charAt] == '*'  && chars[charAt + 1] == '/'))
 		{
 			chars[charAt++] = ' ';
 		}
@@ -95,8 +96,9 @@ public class RemoveComments
 
 	private static void replaceSingleLineCommentWithSpaces()
 	{
-		while ((charAt < chars.length) && (chars[charAt] != '\n')
-				&& (chars[charAt] != '\r' || chars[charAt + 1] != '\n'))
+		while ((charAt < chars.length) && 
+			   (chars[charAt] != '\n') && 
+			   (chars[charAt] != '\r' || chars[charAt + 1] != '\n'))
 		{
 			chars[charAt++] = ' ';
 		}
