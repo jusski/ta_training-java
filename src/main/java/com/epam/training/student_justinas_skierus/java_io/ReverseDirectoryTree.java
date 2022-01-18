@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-/**
- * Реализовать программу которая будет получать в качестве аргумента командной
- * строки путь к директории, например "D:/movies". Записать в текстовый файл
- * структуру папок и файлов в виде, похожем на выполнение программы tree /F.
- */
+
+
 public class ReverseDirectoryTree
 {
 	private List<String> fileNames = new ArrayList<>();
