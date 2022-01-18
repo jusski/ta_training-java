@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Реализовать программу которая будет получать в качестве аргумента командной
+ * строки путь к директории, например "D:/movies". Записать в текстовый файл
+ * структуру папок и файлов в виде, похожем на выполнение программы tree /F.
+ *
  * Если в качестве параметра в программу передается не путь к директории, а путь
  * к txt файлу по образцу выше - прочитать файл и вывести в консоль следующие
  * данные:
@@ -26,11 +30,17 @@ public class DirectoryTree
 
 	public static void printEntries(File entry, String prefix) throws IOException
 	{
-		List<File> files = Arrays.asList(entry.listFiles()).stream().filter(File::isFile).filter(e -> !e.isHidden())
-				.sorted().collect(Collectors.toList());
+		List<File> files = Arrays.asList(entry.listFiles()).stream()
+				.filter(File::isFile)
+				.filter(e -> !e.isHidden()) // program tree doesn't show hidden files by default
+				.sorted()
+				.collect(Collectors.toList());
 
-		List<File> directories = Arrays.asList(entry.listFiles()).stream().filter(File::isDirectory)
-				.filter(e -> !e.isHidden()).sorted().collect(Collectors.toList());
+		List<File> directories = Arrays.asList(entry.listFiles()).stream()
+				.filter(File::isDirectory)
+				.filter(e -> !e.isHidden())
+				.sorted()
+				.collect(Collectors.toList());
 
 		if (directories.size() == 0)
 		{
@@ -64,7 +74,7 @@ public class DirectoryTree
 	public static void printDirectories(List<File> directories, String prefix) throws IOException
 	{
 		String directoryNamePrefix = "├───";
-		Iterator<File> iterator = directories.iterator();
+		Iterator<File> iterator = directories.iterator(); //NOTE(jusski) List.get only works "ok" on RandomAccess Lists
 		if (iterator.hasNext())
 		{
 			for (int i = 0; i < directories.size() - 1; ++i)
@@ -97,7 +107,8 @@ public class DirectoryTree
 			{
 				try
 				{
-					printStream = new PrintStream(new File("tree.txt"), StandardCharsets.UTF_16);
+					//NOTE(jusski) Should we use default charset of "console" or UTF-8?
+					printStream = new PrintStream(new File("tree.txt"), StandardCharsets.UTF_16); 
 					printEntries(file, "");
 				}
 				catch (IOException e)
@@ -121,18 +132,20 @@ public class DirectoryTree
 			}
 			else if (!file.exists())
 			{
-				System.err.printf("Invalid path %s.", file.toString());
+				System.err.printf("Invalid path: %s.", file.toString());
 				System.exit(1);
 			}
 			else
 			{
-				System.err.println("Invalid program argument.");
+				//NOTE(jusski) better safe then sorry (i am not sure this path can happen)
+				System.err.println("Unexpected error. Program will exit.");
 				System.exit(1);
 			}
 		}
 		else
 		{
-			System.err.println("Too many parameters.");
+			System.err.println("Too many parameters. Program accepts only 1 parameter: path to directory"
+					         + "or path to *.txt file (which was created by this program)");
 		}
 	}
 
