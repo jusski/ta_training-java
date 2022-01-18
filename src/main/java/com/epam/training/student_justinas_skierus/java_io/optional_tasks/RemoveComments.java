@@ -1,4 +1,5 @@
 package com.epam.training.student_justinas_skierus.java_io.optional_tasks;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,10 +13,32 @@ public class RemoveComments
 	static int charAt;
 	static char[] chars;
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) 
 	{
 		String path = args.length == 1 ? args[0] : "src/main/java/com/epam/training/student_justinas_skierus/java_io/optional_tasks/RemoveComments.java";
-		chars = Files.readString(Paths.get(path)).toCharArray();
+		try
+		{
+			chars = Files.readString(Paths.get(path)).toCharArray();
+		}
+		catch (IOException e)
+		{
+			File file = new File(path);
+			if(!file.exists() && !file.isFile())
+			{
+				System.err.println("Invalid java source code file path: " + path);
+			
+			}
+			if(!file.canRead())
+			{
+				System.err.println("Cant read java source code file(" + path +"). Check file permissions.");
+			}
+			else
+			{
+				System.err.println("Unexpected program error while reading file: " + path);
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
 
 		checkForObfuscatedJava();
 		for (charAt = 0; charAt < chars.length; ++charAt)
