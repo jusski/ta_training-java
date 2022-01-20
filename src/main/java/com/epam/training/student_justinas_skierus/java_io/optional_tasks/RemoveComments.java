@@ -15,7 +15,8 @@ public class RemoveComments
 	private static final String DEBUG_OUTPUT_FILE_PATH = "RemovedComments.txt";
 	private static int charAt;
 	private static char[] chars;
-    
+
+	String veryImportantString = "//\\/*//// dont delete me \\\\\"*/\\//";
 	public static void main(String[] args) throws IOException 
 	{
 		String path = args.length == 1 ? args[0] : DEBUG_INPUT_FILE_PATH;
@@ -29,9 +30,9 @@ public class RemoveComments
 			{
 				case '"':
 				{
-					if (startOfString())
+					if (isStartOfString())
 					{
-						if (startOfMultilineString())
+						if (isStartOfMultilineString())
 						{
 							skipMultiLineStringUntilClosingQuotes();
 						}
@@ -44,11 +45,11 @@ public class RemoveComments
 				}
 				case '/':
 				{
-					if (startOfSingleLineComment())
+					if (isStartOfSingleLineComment())
 					{
 						replaceSingleLineCommentWithSpaces();
 					}
-					else if (startOfMultiLineComment())
+					else if (isStartOfMultiLineComment())
 					{
 						replaceMultiLineCommentWithSpaces();
 					}
@@ -63,22 +64,22 @@ public class RemoveComments
         Files.copy(Path.of(DEBUG_OUTPUT_FILE_PATH), System.out);
 	}
 
-	private static boolean startOfMultiLineComment()
+	private static boolean isStartOfMultiLineComment()
 	{
 		return chars[charAt + 1] == '*';
 	}
 
-	private static boolean startOfSingleLineComment()
+	private static boolean isStartOfSingleLineComment()
 	{
 		return chars[charAt + 1] == '/';
 	}
 
-	private static boolean startOfMultilineString()
+	private static boolean isStartOfMultilineString()
 	{
 		return chars[charAt + 1] == '"' && chars[charAt + 2] == '"';
 	}
 
-	private static boolean startOfString()
+	private static boolean isStartOfString()
 	{
 		return !(chars[charAt - 1] == '\'' || (chars[charAt - 1] == '\\' && chars[charAt - 2] == '\''));
 	}
@@ -113,7 +114,7 @@ public class RemoveComments
 	private static void replaceMultiLineCommentWithSpaces()
 	{
 		while ((charAt < chars.length) && 
-			   !(chars[charAt] == '*'  && startOfSingleLineComment()))
+			   !(chars[charAt] == '*'  && isStartOfSingleLineComment()))
 		{
 			chars[charAt++] = ' ';
 		}
@@ -142,7 +143,7 @@ public class RemoveComments
 			{
 				continue;
 			}
-			if (startOfMultilineString())
+			if (isStartOfMultilineString())
 			{
 				charAt += 2;
 				break;

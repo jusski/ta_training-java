@@ -7,7 +7,7 @@ import java.util.Random;
 public class Visitor implements Runnable
 {
 	public Cashier cashier;
-	public volatile boolean served = false;
+	public volatile boolean isServed = false;
 	
 	private int magicNumber = 123; // NOTE magic number for repeated debug
 	private Random random = new Random(magicNumber); 
@@ -61,7 +61,7 @@ public class Visitor implements Runnable
 		try
 		{
 			enterFastFoodRestaurant();
-			while (served == false)
+			while (false == isServed )
 			{
 				Thread.sleep(100);
 

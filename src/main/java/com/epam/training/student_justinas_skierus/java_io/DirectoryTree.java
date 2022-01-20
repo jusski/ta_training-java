@@ -72,14 +72,14 @@ public class DirectoryTree
 		String directoryNamePrefix = prefix + "├───";
 		if (!directories.isEmpty())
 		{
-			int LastElementIndex = directories.size() - 1;
-			for (int i = 0; i < LastElementIndex; ++i)
+			int lastElementIndex = directories.size() - 1;
+			for (int i = 0; i < lastElementIndex; ++i)
 			{
 				File directory = directories.get(i);
 				printStream.println(directoryNamePrefix + directory.getName());
 				printEntries(directory, prefix + "│" + " ", printStream);
 			}
-			File directory = directories.get(LastElementIndex);
+			File directory = directories.get(lastElementIndex);
 			printLastDirectory(directory, prefix, printStream);
 		}
 	}

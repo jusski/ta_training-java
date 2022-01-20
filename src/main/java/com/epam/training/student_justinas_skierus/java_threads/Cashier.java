@@ -10,7 +10,7 @@ public class Cashier implements Runnable
 {
 	static final int MAX_QUEUE_LENGTH = 10;
 
-	public ArrayList<Visitor> queue = new ArrayList<>(MAX_QUEUE_LENGTH);
+	public ArrayList<Visitor> visitorQueue = new ArrayList<>(MAX_QUEUE_LENGTH);
 
 	public final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 
@@ -22,10 +22,9 @@ public class Cashier implements Runnable
 
 	public int getQueueLength()
 	{
-		try
+	    try
 		{
-			readLock.lock();
-			return queue.size();
+			return visitorQueue.size();
 		}
 		finally
 		{
@@ -38,7 +37,7 @@ public class Cashier implements Runnable
 		try
 		{
 			readLock.lock();
-			return queue.indexOf(visitor);
+			return visitorQueue.indexOf(visitor);
 		}
 		finally
 		{
@@ -51,11 +50,11 @@ public class Cashier implements Runnable
 		try
 		{
 			writeLock.lock();
-			while (queue.size() > MAX_QUEUE_LENGTH)
+			while (visitorQueue.size() > MAX_QUEUE_LENGTH)
 			{
 				notFull.awaitUninterruptibly();
 			}
-			queue.add(visitor);
+			visitorQueue.add(visitor);
 			notEmpty.signal();
 		}
 		finally
@@ -69,9 +68,9 @@ public class Cashier implements Runnable
 		boolean result = false;
 		if (writeLock.tryLock())
 		{
-			if (queue.size() < MAX_QUEUE_LENGTH)
+			if (visitorQueue.size() < MAX_QUEUE_LENGTH)
 			{
-				queue.add(visitor);
+				visitorQueue.add(visitor);
 				notEmpty.signal();
 				result = true;
 			}
@@ -86,11 +85,11 @@ public class Cashier implements Runnable
 		try
 		{
 			writeLock.lock();
-			while (queue.size() == 0)
+			while (visitorQueue.isEmpty())
 			{
 				notEmpty.awaitUninterruptibly();
 			}
-			Visitor visitor = queue.remove(0);
+			Visitor visitor = visitorQueue.remove(0);
 			
 			notFull.signal();
 			FastFoodRestaurant.restaurantLock.lock();
@@ -110,10 +109,10 @@ public class Cashier implements Runnable
 		try
 		{
 			writeLock.lock();
-			int index = queue.indexOf(visitor);
+			int index = visitorQueue.indexOf(visitor);
 			if (index != -1)
 			{
-				queue.remove(index);
+				visitorQueue.remove(index);
 				
 				notFull.signal();
 				FastFoodRestaurant.restaurantLock.lock();
@@ -136,10 +135,10 @@ public class Cashier implements Runnable
 		while (true)
 		{
 			Visitor visitor = remove();
-			visitor.served = true;
 			try
 			{
 				Thread.sleep(100);
+				visitor.isServed = true;
 			}
 			catch (InterruptedException e)
 			{
