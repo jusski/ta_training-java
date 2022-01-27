@@ -76,13 +76,15 @@ public class ReverseDirectoryTree
 				fileNames.add(line.substring(fileNamePrefix.length()));
 				foundFileEntry = true;
 			}
-			else if (line.startsWith(prefix)) // empty line
-			{
-				break;
-			}
 			else
 			{
-				lineIterator.previous();
+				if (line.startsWith(prefix)) // empty line
+				{
+				}
+				else
+				{
+					lineIterator.previous();
+				}
 				break;
 			}
 		}

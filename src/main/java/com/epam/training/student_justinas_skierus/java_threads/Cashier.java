@@ -1,6 +1,7 @@
 package com.epam.training.student_justinas_skierus.java_threads;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -10,7 +11,7 @@ public class Cashier implements Runnable
 {
 	static final int MAX_QUEUE_LENGTH = 10;
 
-	public ArrayList<Visitor> visitorQueue = new ArrayList<>(MAX_QUEUE_LENGTH);
+	public List<Visitor> visitorQueue = new ArrayList<>(MAX_QUEUE_LENGTH);
 
 	public final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 
@@ -20,10 +21,11 @@ public class Cashier implements Runnable
 	public final Condition notEmpty = writeLock.newCondition();
 	public final Condition notFull = writeLock.newCondition();
 
-	public int getQueueLength()
+	public int size()
 	{
-	    try
+		try
 		{
+			readLock.lock();
 			return visitorQueue.size();
 		}
 		finally
@@ -65,19 +67,19 @@ public class Cashier implements Runnable
 
 	public boolean tryAdd(Visitor visitor)
 	{
-		boolean result = false;
+		boolean addToVisitorQueueSucceded = false;
 		if (writeLock.tryLock())
 		{
 			if (visitorQueue.size() < MAX_QUEUE_LENGTH)
 			{
 				visitorQueue.add(visitor);
 				notEmpty.signal();
-				result = true;
+				addToVisitorQueueSucceded = true;
 			}
 			writeLock.unlock();
 		}
 
-		return result;
+		return addToVisitorQueueSucceded;
 	}
 
 	public Visitor remove()
@@ -90,7 +92,7 @@ public class Cashier implements Runnable
 				notEmpty.awaitUninterruptibly();
 			}
 			Visitor visitor = visitorQueue.remove(0);
-			
+
 			notFull.signal();
 			FastFoodRestaurant.restaurantLock.lock();
 			FastFoodRestaurant.queueChanged.signal();
@@ -113,7 +115,7 @@ public class Cashier implements Runnable
 			if (index != -1)
 			{
 				visitorQueue.remove(index);
-				
+
 				notFull.signal();
 				FastFoodRestaurant.restaurantLock.lock();
 				FastFoodRestaurant.queueChanged.signal();

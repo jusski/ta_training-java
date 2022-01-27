@@ -8,16 +8,15 @@ public class Visitor implements Runnable
 {
 	public Cashier cashier;
 	public volatile boolean isServed = false;
-	
+
 	private int magicNumber = 123; // NOTE magic number for repeated debug
-	private Random random = new Random(magicNumber); 
+	private Random random = new Random(magicNumber);
 
 	public void enterFastFoodRestaurant() throws InterruptedException
 	{
 		while (true)
 		{
-			
-			if(allCashiersHasSameQueueLength())
+			if(allCashiersHaveSameQueueLength())
 			{
 				int cashierIndex = random.nextInt(FastFoodRestaurant.getCashiers().size());
 				cashier = FastFoodRestaurant.getCashiers().get(cashierIndex);
@@ -41,21 +40,19 @@ public class Visitor implements Runnable
 
 	}
 
-	private boolean allCashiersHasSameQueueLength()
+	private boolean allCashiersHaveSameQueueLength()
 	{
 		ArrayList<Cashier> cashiers = FastFoodRestaurant.getCashiers();
-		int firstCashierQueueLength = cashiers.get(0).getQueueLength();
-		boolean allMatch = cashiers.stream().allMatch(e -> e.getQueueLength() == firstCashierQueueLength);
-		return allMatch;
+		int firstCashierQueueLength = cashiers.get(0).size();
+		return cashiers.stream().allMatch(e -> e.size() == firstCashierQueueLength);
 	}
 
 	private Cashier getCashierWithMinQueueLength()
 	{
-		return FastFoodRestaurant.getCashiers().stream()
-				.min(Comparator.comparingInt(Cashier::getQueueLength))
-				.get();
+		return FastFoodRestaurant.getCashiers().stream().min(Comparator.comparingInt(Cashier::size)).get();
 	}
 
+	@Override
 	public void run()
 	{
 		try
@@ -63,20 +60,23 @@ public class Visitor implements Runnable
 			enterFastFoodRestaurant();
 			while (false == isServed )
 			{
-				Thread.sleep(100);
-
-				Cashier cashierWithMinlQueue = getCashierWithMinQueueLength();
-				if (cashier.indexOf(this) > cashierWithMinlQueue.getQueueLength())
+				Thread.sleep(100); 
+                
+				Cashier cashierWithMinQueueSize = getCashierWithMinQueueLength();
+				if (cashier.indexOf(this) > cashierWithMinQueueSize.size())
 				{
 					try
 					{
 						cashier.writeLock.lock();
-						if (cashierWithMinlQueue.writeLock.tryLock())
+						if (cashierWithMinQueueSize.writeLock.tryLock()) // NOTE care for deadlock
 						{
-							if (cashier.indexOf(this) > cashierWithMinlQueue.getQueueLength()) cashier.remove(this);
+							if (cashier.indexOf(this) > cashierWithMinQueueSize.size())
+							{
+								cashier.remove(this);
+								cashierWithMinQueueSize.add(this);
+							}
 
-							cashierWithMinlQueue.add(this);
-							cashierWithMinlQueue.writeLock.unlock();
+							cashierWithMinQueueSize.writeLock.unlock();
 						}
 
 					}
@@ -93,6 +93,5 @@ public class Visitor implements Runnable
 		{
 			ExceptionUtils.rethrowUnchecked(e);
 		}
-
 	}
 }

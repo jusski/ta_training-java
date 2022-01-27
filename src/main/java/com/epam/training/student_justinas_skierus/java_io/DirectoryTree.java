@@ -22,10 +22,10 @@ import lombok.Cleanup;
  * Если в качестве параметра в программу передается не путь к директории, а путь
  * к txt файлу по образцу выше - прочитать файл и вывести в консоль следующие
  * данные:
- * 
- * Количество папок 
- * Количество файлов 
- * Среднее количество файлов в папке 
+ *
+ * Количество папок
+ * Количество файлов
+ * Среднее количество файлов в папке
  * Среднюю длинну названия файла
  *
  */
@@ -40,7 +40,7 @@ public class DirectoryTree
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public static void printEntries(File entry, String prefix, PrintStream printStream) throws IOException 
+	public static void printEntries(File entry, String prefix, PrintStream printStream) throws IOException
 	{
 		List<File> files = filterEntries(entry, File::isFile);
 		List<File> directories = filterEntries(entry, File::isDirectory);
@@ -106,7 +106,7 @@ public class DirectoryTree
 			ReverseDirectoryTree reverseDirectoryTree = new ReverseDirectoryTree();
 			reverseDirectoryTree.printSummary(file);
 		}
-		
+
 		Files.copy(Path.of("tree.txt"), System.out);
 	}
 

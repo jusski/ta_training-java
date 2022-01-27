@@ -17,7 +17,9 @@ public class FastFoodRestaurant
 		for (int i = 0; i < NUMBER_OF_CASHIERS; ++i)
 		{
 			Cashier cashier = new Cashier();
-			new Thread(cashier, "cashier").start();
+			Thread thread = new Thread(cashier, "cashier");
+			thread.setDaemon(true);
+			thread.start();
 			cashiers.add(cashier);
 		}
 	}
