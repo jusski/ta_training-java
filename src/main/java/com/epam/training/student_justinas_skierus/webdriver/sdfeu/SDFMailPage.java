@@ -83,8 +83,6 @@ public class SDFMailPage implements MailPage
 			System.out.println(countDisplay.getText());
 			Matcher matcher = Pattern.compile("Message (\\d+) of (\\d+)").matcher(countDisplay.getText());
 			matcher.matches();
-			System.out.println(matcher.group(1));
-			System.out.println(matcher.group(2));
 			return !matcher.group(1).equals(matcher.group(2));
 		}
 		System.out.println(countDisplay.getText());

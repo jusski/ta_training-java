@@ -33,7 +33,7 @@ public class FastMailLoginPage extends LoadableComponent<FastMailLoginPage> impl
 	}
 	
 	@Override
-	public FastMailInboxPage authorize(String email, String passphrase)
+	public FastMailInboxPage authenticate(String email, String passphrase)
 	{
 		username.sendKeys(email);
 		password.sendKeys(passphrase, Keys.ENTER);

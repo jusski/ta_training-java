@@ -39,7 +39,7 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
 	private WebElement searchFoundMailMessagesConfirmationAlert;
 
 	@FindBy(css = "#messagelist .message.unread")
-	private List<WebElement> unreadMailMessageList;
+	private List<WebElement> unreadEMails;
 
 	public SDFInboxPage(WebDriver webdriver)
 	{
@@ -54,7 +54,7 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
         PageFactory.initElements(new AjaxElementLocatorFactory(webdriver, TIME_OUT_IN_SECONDS), this);
     }
 
-	public MailPage searchForEmailsWithSubject(String subject) 
+	public MailPage searchForUnreadEmailsWithSubject(String subject) 
 	{
 //		searchInput.click();
 //		searchInput.sendKeys(subject, Keys.ENTER);
@@ -69,11 +69,11 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
 		
 		if(elementIsDisplayed(searchFoundMailMessagesConfirmationAlert))
 		{
-			if(!unreadMailMessageList.isEmpty())
+			if(!unreadEMails.isEmpty())
 			{
 				String currentUrl = webdriver.getCurrentUrl();
-				unreadMailMessageList.get(0).click();
-				unreadMailMessageList.get(0).click();
+				unreadEMails.get(0).click();
+				unreadEMails.get(0).click();
 				sleep().until(ExpectedConditions.not(ExpectedConditions.urlToBe(currentUrl)));
 				
 				return new SDFMailPage(webdriver);
@@ -92,7 +92,7 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("authentication.properties"));
             String email = properties.getProperty("sdf-username");
             String password = properties.getProperty("sdf-password");
-            loginPage.get().authorize(email, password);
+            loginPage.get().authenticate(email, password);
         }
         catch (IOException e)
         {

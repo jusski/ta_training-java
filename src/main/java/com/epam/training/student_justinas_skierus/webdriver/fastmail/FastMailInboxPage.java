@@ -48,7 +48,8 @@ public class FastMailInboxPage extends LoadableComponent<FastMailInboxPage> impl
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("authentication.properties"));
             String email = properties.getProperty("fastmail-username");
             String password = properties.getProperty("fastmail-password");
-            loginPage.get().authorize(email, password);
+           
+            loginPage.get().authenticate(email, password);
         }
         catch (IOException e)
         {

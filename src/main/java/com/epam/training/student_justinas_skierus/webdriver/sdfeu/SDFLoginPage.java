@@ -47,7 +47,7 @@ public class SDFLoginPage extends LoadableComponent<SDFLoginPage> implements Log
 	}
 
 	@Override
-	public Page authorize(String email, String password)
+	public Page authenticate(String email, String password)
 	{
 		this.username.sendKeys(email);
 		this.password.sendKeys(password, Keys.ENTER);

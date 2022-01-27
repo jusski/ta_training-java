@@ -8,11 +8,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverLogLevel;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.IRetryAnalyzer;
-import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+
+import com.epam.training.student_justinas_skierus.webdriver.utilities.ScreenshotCaptureOnTestFailure;
 
 public abstract class AbstractPageTest
 {
@@ -32,6 +32,7 @@ public abstract class AbstractPageTest
      public void beforeMethod()
      {
          createNewWebDriverSession();
+         ScreenshotCaptureOnTestFailure.driver = driver;
      }
 
      @AfterMethod
@@ -51,21 +52,5 @@ public abstract class AbstractPageTest
 	{
 		if(driver != null) driver.close();
 	}
-	
-	 public static class RetryAnalyzer implements IRetryAnalyzer
-	    {
-	        int counter = 0;
-	        int retryLimit = 4;
-	        
-	        @Override
-	        public boolean retry(ITestResult result)
-	        {
-	            if(counter < retryLimit)
-	            {
-	                counter += 1;
-	                return true;
-	            }
-	            return false;
-	        }
-	    }
+    
 }

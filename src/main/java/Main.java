@@ -1,5 +1,10 @@
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -26,49 +31,10 @@ public class Main
 		WebDriver driver = new ChromeDriver(options);
 		driver.manage().window().setSize(new Dimension(900,800));
 
-//			
-//		String randomSubject = UUID.randomUUID().toString();
-//		String randomText = UUID.randomUUID().toString();
-//		
-//		SDFInboxPage sdfInboxPage;
-//		
-//		FastMailLoginPage loginPage = new FastMailLoginPage(driver);
-//		FastMailInboxPage inboxPage = new FastMailInboxPage(driver, loginPage);
-//		FastMailComposePage composePage = new FastMailComposePage(driver, inboxPage);
-//
-//		composePage.get();
-//		composePage.sendEmail("jusski@sdf-eu.org", randomSubject, randomText);
-//		
-//		SDFLoginPage sdfLoginPage = new SDFLoginPage(driver);
-//		sdfInboxPage = new SDFInboxPage(driver, sdfLoginPage);
-//		sdfInboxPage.get();
-//		SDFMailPage mailPage = sdfInboxPage.searchForEmailsWithSubject(randomSubject);
-		
-//		System.out.println(mailPage.isPageStateCorrect());
-//		System.out.println(mailPage.getSubject().contains(randomSubject));
-//		
-		
-		 String randomSubject = UUID.randomUUID().toString();
-		    String randomText = UUID.randomUUID().toString();
-		    
-		 FastMailComposePage composeMailPage = new FastMailComposePage(driver);
-	        composeMailPage.get();
-	        
-	        InboxPage inboxPage = composeMailPage.sendEmail("jusski@sdf-eu.org", randomSubject, randomText);
-	        Assert.assertTrue(inboxPage.isPageStateCorrect(), "Error in sending email.");
-	        
-	        SDFInboxPage inboxPage2 = new SDFInboxPage(driver);
-	        inboxPage2.get();
-	        
-	        MailPage email = inboxPage2.searchForEmailsWithSubject(randomSubject);
-	        Assert.assertTrue(email.isPageStateCorrect(), "Could not load email page.");
-	        Assert.assertTrue(email.getSubject().contains(randomSubject), "Subject in email is wrong. Expected: " + 
-	                                                                       randomSubject + " but got: " + email.getSubject());
-	        Assert.assertTrue(email.getBody().contains(randomText), "Body in email is wrong. Expected: " + randomText + 
-	                                                                " but got: " + email.getBody());
-		System.out.println("end");
-//		driver.close();
-//		driver.quit();
+			
+
+		driver.quit();
+         
 		
 	}
 }

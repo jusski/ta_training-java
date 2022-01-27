@@ -21,7 +21,7 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
 	private final WebDriver webdriver;
 	private WebDriverWait webDriverWait;
 	
-	@FindBy(id = "v143")
+	@FindBy(css = ".v-Button.s-send")
 	WebElement sendButton;
 	
 	@FindBy(css = ".v-EmailInput-input")

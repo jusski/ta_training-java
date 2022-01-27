@@ -1,12 +1,13 @@
 package com.epam.training.student_justinas_skierus.webdriver.fastmail;
 
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.epam.training.student_justinas_skierus.webdriver.AbstractPageTest;
+import com.epam.training.student_justinas_skierus.webdriver.utilities.ScreenshotCaptureOnTestFailure;
 
+@Listeners(ScreenshotCaptureOnTestFailure.class)
 public class LoginPageTest extends AbstractPageTest
 {
 	@Test
@@ -15,7 +16,7 @@ public class LoginPageTest extends AbstractPageTest
 	    FastMailLoginPage loginPage = new FastMailLoginPage(driver);
 		loginPage.get();
 		
-		FastMailInboxPage inboxPage = loginPage.authorize("rdx@fastmail.com", "asdf6gh");
+		FastMailInboxPage inboxPage = loginPage.authenticate("rdx@fastmail.com", "asdf6ghj");
 		Assert.assertTrue(inboxPage.isPageStateCorrect());
 	}
 	
@@ -25,7 +26,7 @@ public class LoginPageTest extends AbstractPageTest
 	    FastMailLoginPage loginPage = new FastMailLoginPage(driver);
         loginPage.get();
         
-		FastMailInboxPage inboxPage = loginPage.authorize("nonsense", "asdf6gh");
+		FastMailInboxPage inboxPage = loginPage.authenticate("nonsense", "asdf6gh");
 		Assert.assertFalse(inboxPage.isPageStateCorrect());
 	}
 	
@@ -35,7 +36,7 @@ public class LoginPageTest extends AbstractPageTest
 	    FastMailLoginPage loginPage = new FastMailLoginPage(driver);
         loginPage.get();
         
-		FastMailInboxPage inboxPage = loginPage.authorize("rdx@fastmail.com", "123456");
+		FastMailInboxPage inboxPage = loginPage.authenticate("rdx@fastmail.com", "123456");
 		Assert.assertFalse(inboxPage.isPageStateCorrect());
 	}
 	
@@ -45,7 +46,7 @@ public class LoginPageTest extends AbstractPageTest
 	    FastMailLoginPage loginPage = new FastMailLoginPage(driver);
         loginPage.get();
         
-		FastMailInboxPage inboxPage = loginPage.authorize("rdx@fastmail.com", "");
+		FastMailInboxPage inboxPage = loginPage.authenticate("rdx@fastmail.com", "");
 		Assert.assertFalse(inboxPage.isPageStateCorrect());
 	}
 	
@@ -55,7 +56,7 @@ public class LoginPageTest extends AbstractPageTest
 	    FastMailLoginPage loginPage = new FastMailLoginPage(driver);
         loginPage.get();
         
-		FastMailInboxPage inboxPage = loginPage.authorize("", "asdf6gh");
+		FastMailInboxPage inboxPage = loginPage.authenticate("", "asdf6gh");
 		Assert.assertFalse(inboxPage.isPageStateCorrect());
 	}
 }
