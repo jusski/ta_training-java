@@ -25,13 +25,13 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
 	WebElement sendButton;
 	
 	@FindBy(css = ".v-EmailInput-input")
-	WebElement to;
+	WebElement toInput;
 	
 	@FindBy(css = "input[class=v-TextInput-input]")
-	WebElement subject;
+	WebElement subjectInput;
 	
 	@FindBy(css = ".v-RichText-input.u-article")
-	WebElement textBody;
+	WebElement textBodyInput;
 
 	public FastMailComposePage(WebDriver webdriver)
 	{
@@ -45,22 +45,13 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
 	   PageFactory.initElements(new AjaxElementLocatorFactory(webdriver, TIME_OUT_IN_SECONDS), this);
 	}
 
-	@Override
-	protected void load()
-	{
-		parent.get();
-		String currentUrl = webdriver.getCurrentUrl();
-		webdriver.get(URL);
-		sleep().until(urlChanges(currentUrl));
-	}
-
 	public FastMailInboxPage sendEmail(String to, String subject, String textBody)
 	{
-		this.to.click();
-		this.to.sendKeys(to);
+		toInput.click();
+		toInput.sendKeys(to);
 
-		this.subject.sendKeys(subject);
-		this.textBody.sendKeys(textBody);
+		subjectInput.sendKeys(subject);
+		textBodyInput.sendKeys(textBody);
 		
 		String currentUrl = webdriver.getCurrentUrl();
 		sendButton.click();
@@ -68,7 +59,14 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
         
 		return parent;
 	}
-   
+	@Override
+    protected void load()
+    {
+        parent.get();
+        String currentUrl = webdriver.getCurrentUrl();
+        webdriver.get(URL);
+        sleep().until(urlChanges(currentUrl));
+    }
 	
 	@Override
 	protected void isLoaded() throws Error
@@ -79,7 +77,7 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
 	@Override
 	public boolean isPageStateCorrect()
 	{
-		return urlStartsWith(URL);
+		return isUrlBeginningWith(URL);
 	}
 
 	@Override
@@ -87,5 +85,4 @@ public class FastMailComposePage extends LoadableComponent<FastMailComposePage> 
 	{
 		return webDriverWait;
 	}
-
 }

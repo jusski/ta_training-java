@@ -67,7 +67,7 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
 		actions.sendKeys(subject, Keys.ENTER);
 		actions.build().perform();
 		
-		if(elementIsDisplayed(searchFoundMailMessagesConfirmationAlert))
+		if(isElementDisplayed(searchFoundMailMessagesConfirmationAlert))
 		{
 			if(!unreadEMails.isEmpty())
 			{
@@ -109,7 +109,7 @@ public class SDFInboxPage extends LoadableComponent<SDFInboxPage> implements Inb
 	@Override
 	public boolean isPageStateCorrect()
 	{
-		return urlStartsWith(URL);
+		return isUrlBeginningWith(URL);
 	}
 
 	@Override

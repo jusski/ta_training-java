@@ -66,7 +66,7 @@ public class FastMailInboxPage extends LoadableComponent<FastMailInboxPage> impl
     @Override
     public boolean isPageStateCorrect()
     {
-        return urlStartsWith(URL);
+        return isUrlBeginningWith(URL);
     }
 
     @Override

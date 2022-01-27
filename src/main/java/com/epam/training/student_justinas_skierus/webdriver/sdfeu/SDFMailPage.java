@@ -42,9 +42,9 @@ public class SDFMailPage implements MailPage
 	@Override
 	public boolean isPageStateCorrect()
 	{
-		return elementIsDisplayed(from) &&
-			   elementIsDisplayed(subject) &&
-			   elementIsDisplayed(textBody);
+		return isElementDisplayed(from) &&
+			   isElementDisplayed(subject) &&
+			   isElementDisplayed(textBody);
 	}
 
 	@Override

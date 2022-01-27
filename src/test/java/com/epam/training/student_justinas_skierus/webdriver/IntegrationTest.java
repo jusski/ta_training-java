@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.epam.training.student_justinas_skierus.webdriver.fastmail.FastMailComposePage;
 import com.epam.training.student_justinas_skierus.webdriver.sdfeu.SDFInboxPage;
@@ -20,7 +21,7 @@ public class IntegrationTest extends AbstractPageTest
     String randomSubject = UUID.randomUUID().toString();
     String randomText = UUID.randomUUID().toString();
    
-    @Test
+    @Test(description = "Tests email sending from FastMail provider")
     public void shouldSendEmailFromFastMailProvider()
     {
         FastMailComposePage composeMailPage = new FastMailComposePage(driver);
@@ -31,20 +32,25 @@ public class IntegrationTest extends AbstractPageTest
     }
     
     @Test(dependsOnMethods = "shouldSendEmailFromFastMailProvider",
-          retryAnalyzer = RetryAnalyzerOnTestFailure.class)
+          retryAnalyzer = RetryAnalyzerOnTestFailure.class,
+          description = "Tests receiving email, which should be marked as unread with known subject, body and sender.")
     public void shouldReceiveEmailInSDFProviderInboxFromFastMail()
     {
         SDFInboxPage inboxPage = new SDFInboxPage(driver);
         inboxPage.get();
         
         MailPage email = inboxPage.searchForUnreadEmailsWithSubject(randomSubject);
-        Assert.assertTrue(email.isPageStateCorrect(), "Could not find email with subject: " + randomSubject);
-        Assert.assertTrue(email.getSubject().contains(randomSubject), 
+        
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(email.isPageStateCorrect(), "Could not find email with subject: " + randomSubject);
+        softAssert.assertTrue(email.getSubject().contains(randomSubject), 
                 "Subject in email is wrong. Expected: " + randomSubject + " but got: " + email.getSubject());
-        Assert.assertTrue(email.getBody().contains(randomText), 
+        softAssert.assertTrue(email.getBody().contains(randomText), 
                 "Body in email is wrong. Expected: " + randomText + " but got: " + email.getBody());
-        Assert.assertTrue(email.getFrom().contains(FASTMAIL_EMAIL_ADDRESS), 
+        softAssert.assertTrue(email.getFrom().contains(FASTMAIL_EMAIL_ADDRESS), 
                 "Sender is wrong. Expected: " + FASTMAIL_EMAIL_ADDRESS + " but got"  + email.getFrom());
+        
+        softAssert.assertAll();
     }
     
    

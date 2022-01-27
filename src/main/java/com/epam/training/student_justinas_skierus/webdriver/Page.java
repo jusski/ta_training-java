@@ -17,7 +17,7 @@ public interface Page
 	boolean isPageStateCorrect();
     WebDriverWait sleep();
 	
-	public default boolean urlStartsWith(String url)
+	public default boolean isUrlBeginningWith(String url)
 	{
 	    return expectedCondition((driver) -> driver.getCurrentUrl().startsWith(url));
 	}
@@ -27,7 +27,7 @@ public interface Page
         return ExpectedConditions.not(ExpectedConditions.urlToBe(currentUrl));
     }
     
-	public default boolean elementIsDisplayed(WebElement element)
+	public default boolean isElementDisplayed(WebElement element)
 	{
 		try
 		{

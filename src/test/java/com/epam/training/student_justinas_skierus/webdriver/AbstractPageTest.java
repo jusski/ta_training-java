@@ -1,5 +1,7 @@
 package com.epam.training.student_justinas_skierus.webdriver;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,13 +18,20 @@ import com.epam.training.student_justinas_skierus.webdriver.utilities.Screenshot
 
 public abstract class AbstractPageTest
 {
-	protected WebDriver driver;
+    protected WebDriver driver;
 	private ChromeOptions options;
 	
 	@BeforeSuite
-	public void beforeSuit()
+	public void beforeSuit() throws IOException
 	{
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\R61\\Downloads\\chromedriver_win32\\chromedriver.exe");
+	    if(System.getProperty("webdriver.chrome.driver") == null)
+	    {
+	        Properties properties = new Properties();
+	        properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("webdriver.properties"));
+	        
+	        System.setProperty("webdriver.chrome.driver", properties.getProperty("chrome-driver-path"));
+	    }
+		
 		options = new ChromeOptions();
 		options.setLogLevel(ChromeDriverLogLevel.OFF);
 		Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
@@ -49,8 +58,11 @@ public abstract class AbstractPageTest
 	}
 	
 	protected void closeWebDriverSession()
-	{
-		if(driver != null) driver.close();
+    {
+        if (driver != null)
+        {
+            driver.quit();
+        }
 	}
     
 }

@@ -19,7 +19,7 @@ public class FastMailLoginPage extends LoadableComponent<FastMailLoginPage> impl
 	private WebElement username;
 	private WebElement password;
 	
-	@FindBy(xpath = "//*[@id=\"v10\"]/div/p/button")
+	@FindBy(css = "form .v-Button") 
 	private WebElement loginButton;
 	
 	private WebDriver webdriver;
@@ -42,10 +42,11 @@ public class FastMailLoginPage extends LoadableComponent<FastMailLoginPage> impl
 	}
 	
 	@Override
-	protected void load() throws RuntimeException
+	protected void load() 
 	{
 		webdriver.get(URL);
 	}
+	
 	@Override
 	protected void isLoaded() throws Error
 	{
@@ -55,10 +56,10 @@ public class FastMailLoginPage extends LoadableComponent<FastMailLoginPage> impl
 	@Override
 	public boolean isPageStateCorrect()
 	{
-	    return urlStartsWith(URL) &&
-			   elementIsDisplayed(username)&&
-			   elementIsDisplayed(password)&&
-			   elementIsDisplayed(loginButton);
+	    return isUrlBeginningWith(URL) &&
+			   isElementDisplayed(username) && 
+			   isElementDisplayed(password) &&
+			   isElementDisplayed(loginButton);
 	}
 
 	@Override

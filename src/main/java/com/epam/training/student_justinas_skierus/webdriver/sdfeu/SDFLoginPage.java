@@ -35,9 +35,9 @@ public class SDFLoginPage extends LoadableComponent<SDFLoginPage> implements Log
 	@Override
 	public boolean isPageStateCorrect()
 	{
-		return urlStartsWith(URL) &&
-			   elementIsDisplayed(username) &&
-			   elementIsDisplayed(password);
+		return isUrlBeginningWith(URL) &&
+			   isElementDisplayed(username) &&
+			   isElementDisplayed(password);
 	}
 
 	@Override
